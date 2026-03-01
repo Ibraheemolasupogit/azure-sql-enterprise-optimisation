@@ -68,14 +68,29 @@ Measured using:
 | Elapsed Time  | ~793 ms |
 | Rows Returned | ~22,000 |
 
+
 ### Plan Observations
 
 - Nonclustered Index Seek on `PathwayEvent`
 - Followed by **Key Lookup**
-- Key Lookup responsible for ~50%+ of query cost
+- Key Lookup responsible for ~50%+ of query cost (~54%)
 - Lookup repeated ~22,000 times
+- Nested Loops join pattern amplifying row-by-row lookups
 
-This is a classic lookup amplification pattern.
+This is a classic lookup amplification pattern where missing columns in a nonclustered index force repeated clustered index access.
+
+---
+
+## Execution Plan – Before Optimisation
+
+![Execution Plan Before](images/performance/execution-plan-before-covering-index.png)
+
+**Visual confirmation:**
+
+- `Key Lookup (Clustered)` on `core.PathwayEvent`
+- Estimated operator cost ≈ 54.35%
+- Nested Loops driving repeated bookmark lookups
+- Significant random I/O contributing to high logical reads (~144k baseline)
 
 ---
 
@@ -186,6 +201,19 @@ Result:
 
 ---
 
+## Execution Plan – After Covering Index
 
+![Execution Plan After](images/performance/execution-plan-after-covering-index.png)
+
+**Key improvements:**
+
+- `Index Seek` on `IX_PathwayEvent_Covering`
+- No `Key Lookup` operator present
+- Work consolidated into a single covering seek
+- Improved plan shape and reduced lookup amplification
+
+Although operator percentages redistribute (e.g., ~72% on Index Seek), this reflects workload concentration in a single efficient operator rather than row-by-row clustered lookups.
+
+---
 
 
