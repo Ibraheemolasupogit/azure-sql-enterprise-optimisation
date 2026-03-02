@@ -4,7 +4,7 @@
 
 ![Azure SQL Architecture](images/architecture/azure-sql-architecture.png)
 
-This diagram illustrates the logical and regional design of the Azure SQL Database deployment.
+This diagram illustrates the logical and regional design of the Azure SQL Database solution.
 
 ---
 
