@@ -1,5 +1,17 @@
 # Architecture
 
+## High-Level Architecture
+
+![Azure SQL Architecture](images/architecture/azure-sql-architecture.png)
+
+This diagram illustrates the logical and regional design of the Azure SQL Database deployment.
+
+---
+
+## Logical Design
+
+...
+
 ## High-Level Design
 
 - Azure SQL Database (General Purpose, serverless) in UK South.
